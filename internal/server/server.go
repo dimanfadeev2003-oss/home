@@ -1,1 +1,32 @@
 package server
+
+import (
+	"log"
+	"net/http"
+	"time"
+
+	"github.com/Yandex-Practicum/go1fl-sprint6-final/internal/handlers"
+)
+
+type Serv struct {
+	Log *log.Logger
+	Ser *http.Server
+}
+
+func Rout(log *log.Logger) *Serv {
+	rout := http.NewServeMux()
+	rout.HandleFunc("/", handlers.HtmlHandler)
+	rout.HandleFunc("/upload", handlers.HtmlUpload)
+	serv := &http.Server{
+		Addr:         ":8080",
+		Handler:      rout,
+		ErrorLog:     log,
+		ReadTimeout:  time.Second * 5,
+		WriteTimeout: time.Second * 10,
+		IdleTimeout:  time.Second * 15,
+	}
+	return &Serv{
+		Log: log,
+		Ser: serv,
+	}
+}
