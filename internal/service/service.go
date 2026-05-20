@@ -8,16 +8,16 @@ import (
 )
 
 func Service(t string) (string, error) {
-	clean := strings.ReplaceAll(t, "", " ")
-	if len(clean) <= 0 {
+	if len(t) <= 0 {
 		return "", errors.New("пустая строка")
 	}
-	for _, q := range clean {
-		if q != '.' && q != '-' {
-			text := morse.ToMorse(t)
-			return text, nil
-		}
+	cleans := strings.ReplaceAll(t, ".", "")
+	cleanss := strings.ReplaceAll(cleans, " ", "")
+	clean := strings.ReplaceAll(cleanss, "-", "")
+	if len(clean) <= 0 {
+		text := morse.ToText(t)
+		return text, nil
 	}
-	text := morse.ToText(t)
+	text := morse.ToMorse(t)
 	return text, nil
 }
