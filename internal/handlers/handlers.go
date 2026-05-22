@@ -23,19 +23,23 @@ func HtmlUpload(w http.ResponseWriter, r *http.Request) {
 	err := r.ParseMultipartForm(10 << 20)
 	if err != nil {
 		http.Error(w, "ошибка парсинга", http.StatusInternalServerError)
+		return
 	}
 	file, form, err := r.FormFile("file")
 	if err != nil {
 		http.Error(w, "ошибка получения формы", http.StatusInternalServerError)
+		return
 	}
 	defer file.Close()
 	cheat, err := io.ReadAll(file)
 	if err != nil {
 		http.Error(w, "ошибка чтения файла", http.StatusInternalServerError)
+		return
 	}
 	serv, err := service.Service(string(cheat))
 	if err != nil {
 		http.Error(w, "ошибка конвертации", http.StatusInternalServerError)
+		return
 	}
 	time := time.Now().UTC().String()
 	rash := filepath.Ext(form.Filename)
@@ -43,8 +47,13 @@ func HtmlUpload(w http.ResponseWriter, r *http.Request) {
 	lockfile, err := os.Create(cr)
 	if err != nil {
 		http.Error(w, "ошибка создания файла", http.StatusInternalServerError)
+		return
 	}
 	defer lockfile.Close()
+	_, err = lockfile.WriteString(serv)
+	if err != nil {
+		http.Error(w, "ошибка записи в файл", http.StatusInternalServerError)
+	}
 	fmt.Fprintln(w, serv)
 }
 
