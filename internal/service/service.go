@@ -11,11 +11,11 @@ func Service(t string) (string, error) {
 	if len(t) <= 0 {
 		return "", errors.New("пустая строка")
 	}
-	rus := "АБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ"
-	if strings.ContainsAny(t, rus) {
-		text := morse.ToMorse(t)
+	clean := strings.Trim(t, ".- ")
+	if clean == "" {
+		text := morse.ToText(t)
 		return text, nil
 	}
-	text := morse.ToText(t)
+	text := morse.ToMorse(t)
 	return text, nil
 }
