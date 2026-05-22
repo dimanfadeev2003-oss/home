@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/Yandex-Practicum/go1fl-sprint6-final/internal/service"
@@ -20,6 +21,10 @@ func HtmlHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func HtmlUpload(w http.ResponseWriter, r *http.Request) {
+	contentType := r.Header.Get("Content-Type")
+	if !strings.Contains(contentType, "multipart/form-data") {
+		http.Error(w, "неверный Content-Type", http.StatusInternalServerError)
+	}
 	err := r.ParseMultipartForm(10 << 20)
 	if err != nil {
 		http.Error(w, "ошибка парсинга", http.StatusInternalServerError)
