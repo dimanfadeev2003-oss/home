@@ -21,9 +21,9 @@ func Rout(log *log.Logger) *Serv {
 		Addr:         ":8080",
 		Handler:      rout,
 		ErrorLog:     log,
-		ReadTimeout:  time.Second * 5,
-		WriteTimeout: time.Second * 10,
-		IdleTimeout:  time.Second * 15,
+		ReadTimeout:  5 * time.Second,
+		WriteTimeout: 10 * time.Second,
+		IdleTimeout:  15 * time.Second,
 	}
 	return &Serv{
 		Log: log,
