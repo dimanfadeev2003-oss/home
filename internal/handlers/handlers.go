@@ -25,7 +25,7 @@ func HtmlUpload(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "ошибка парсинга", http.StatusInternalServerError)
 		return
 	}
-	file, form, err := r.FormFile("file")
+	file, form, err := r.FormFile("myFile")
 	if err != nil {
 		http.Error(w, "ошибка получения формы", http.StatusInternalServerError)
 		return
