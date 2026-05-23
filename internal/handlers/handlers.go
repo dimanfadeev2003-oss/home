@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"strings"
 	"time"
 
 	"github.com/Yandex-Practicum/go1fl-sprint6-final/internal/service"
@@ -21,13 +20,8 @@ func HtmlHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func HtmlUpload(w http.ResponseWriter, r *http.Request) {
-	contentType := r.Header.Get("Content-Type")
-	if !strings.Contains(contentType, "multipart/form-data") {
-		http.Error(w, "неверный Content-Type", http.StatusInternalServerError)
-	}
-	err := r.ParseMultipartForm(10 << 20)
-	if err != nil {
-		http.Error(w, "ошибка парсинга", http.StatusInternalServerError)
+	if r.Method != http.MethodPost {
+		http.Error(w, "метод не поддерживается", http.StatusInternalServerError)
 		return
 	}
 	file, form, err := r.FormFile("myFile")
@@ -58,15 +52,12 @@ func HtmlUpload(w http.ResponseWriter, r *http.Request) {
 	_, err = lockfile.WriteString(serv)
 	if err != nil {
 		http.Error(w, "ошибка записи в файл", http.StatusInternalServerError)
-	}
-	fmt.Fprintln(w, serv)
-}
-
-func Handlers() {
-	http.HandleFunc("/upload", HtmlUpload)
-	http.HandleFunc("/", HtmlHandler)
-	if err := http.ListenAndServe(":8080", nil); err != nil {
-		fmt.Printf("ошибка запуска сервера%s", err.Error())
 		return
+	}
+	w.Header().Set("Content-Type", "text/plain; charset=UTF-8")
+	w.WriteHeader(http.StatusOK)
+	_, err = w.Write([]byte(serv))
+	if err != nil {
+		http.Error(w, "ошибка записи", http.StatusInternalServerError)
 	}
 }

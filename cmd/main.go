@@ -8,9 +8,10 @@ import (
 )
 
 func main() {
-	logger := log.New(os.Stdout, "Server: ", log.LstdFlags)
+	logger := log.New(os.Stdout, "Server: ", 0)
 	serv := server.Rout(logger)
-	if err := serv.Ser.ListenAndServe(); err != nil {
+	err := serv.Ser.ListenAndServe()
+	if err != nil {
 		logger.Fatal(err)
 	}
 }
